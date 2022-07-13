@@ -8,22 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   registerMode = false;
-  values: any;
+
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.getValues();
+
   }
 
-  registerToggle(){
-    this.registerMode = !this.registerMode;
+  registerToggle() {
+    this.registerMode = true;
   }
 
-  getValues(){
-    this.http.get('http://localhost:5000/api/values').subscribe({
-    next: (res) => this.values = res,
-    error: (err) => console.log(err)
-    })
+  cnacelRegisterMode(registerMode: boolean) {
+    this.registerMode = registerMode;
   }
+
+
 }
