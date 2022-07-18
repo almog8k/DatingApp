@@ -60,5 +60,9 @@ export class AuthService {
     return this.isLoginSubject.asObservable();
   }
 
+  loggedIn() {
+    return this.hasToken();
+  }
+
 
 }

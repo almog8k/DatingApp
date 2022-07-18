@@ -1,5 +1,6 @@
 
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
@@ -18,7 +19,7 @@ export class NavComponent implements OnInit {
 
 
 
-  constructor(private authService: AuthService, private alertify: AlertifyService) {
+  constructor(private authService: AuthService, private alertify: AlertifyService, private router: Router) {
     this.isLoggedIn = authService.isLoggedIn();
     this.isLoggedIn.subscribe(res => console.log(res))
   }
@@ -31,14 +32,17 @@ export class NavComponent implements OnInit {
     this.authService.login(this.model).subscribe({
       next: () => this.alertify.success('logged in succefully'),
       error: (err) => this.alertify.error(err),
-      complete: () => { this.username = this.getUsername() }
+      complete: () => {
+        this.username = this.getUsername();
+        this.router.navigate(['/members']);
+      }
     });
   }
 
   logOut() {
     this.authService.logOut();
-    this.alertify.message('logged out')
-
+    this.alertify.message('logged out');
+    this.router.navigate(['/home']);
   }
 
   getUsername() {
