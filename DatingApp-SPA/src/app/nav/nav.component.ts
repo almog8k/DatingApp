@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
@@ -7,28 +10,40 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-  model: any = {};
 
-  constructor(private authService: AuthService) { }
+
+  model: any = {};
+  username: string = "";
+  isLoggedIn: Observable<boolean>;
+
+
+
+  constructor(private authService: AuthService, private alertify: AlertifyService) {
+    this.isLoggedIn = authService.isLoggedIn();
+    this.isLoggedIn.subscribe(res => console.log(res))
+  }
 
   ngOnInit() {
+    this.username = this.getUsername();
   }
 
   login() {
     this.authService.login(this.model).subscribe({
-      next: () => console.log('Logged Successfully'),
-      error: (err) => console.error(err),
-      complete: () => console.info('complete')
+      next: () => this.alertify.success('logged in succefully'),
+      error: (err) => this.alertify.error(err),
+      complete: () => { this.username = this.getUsername() }
     });
   }
 
-  loggedIn() {
-    const token = localStorage.getItem('token');
-    return !!token;
+  logOut() {
+    this.authService.logOut();
+    this.alertify.message('logged out')
+
   }
 
-  logOut() {
-    localStorage.removeItem('token');
-    console.log('logged out');
+  getUsername() {
+    const name = this.authService.decodedToken?.name;
+    return name ? name : 'User';
   }
+
 }

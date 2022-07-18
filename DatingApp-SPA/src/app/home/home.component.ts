@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -7,20 +8,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  registerMode = false;
+  registerMode: boolean = false;
+  isLoggedIn: Observable<boolean>;
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private authService: AuthService) {
+    this.isLoggedIn = authService.isLoggedIn();
+  }
+
 
   ngOnInit(): void {
 
   }
 
-  registerToggle() {
+  registerToggle(): void {
     this.registerMode = true;
   }
 
-  cnacelRegisterMode(registerMode: boolean) {
+  cnacelRegisterMode(registerMode: boolean): void {
     this.registerMode = registerMode;
   }
 
